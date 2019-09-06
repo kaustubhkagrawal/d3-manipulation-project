@@ -65,6 +65,7 @@ let paginate = (data = tableData) => {
   d3.select('#limitSpan').text(limit);
   d3.select('#startSpan').text(start);
   d3.select('#endSpan').text(start + limit);
+  d3.select('#countSpan').text(data.length);
   return data.slice(start, start + limit);
 }
 
@@ -72,7 +73,44 @@ let groupdata = () => {
   groupedData = d3.nest()
     .key(d => d.ministry)
     .entries(dbData);
+
+
+  // d3.select('#searchbar')
+  //   .selectAll('option')
+  //   .data(groupedData)
+  //   .append('option')
+  //   .attr('value', d => d.key)
+  //   .text(d => d.key);
+
+
+  // $.each(groupedData, (index, item) => {
+  //   d3.select('#searchbar')
+  //     .append('option')
+  //     .attr('value', item.key.toLowerCase())
+  //     .text(item.key);
 }
+
+let searchFn = (flag = true) => {
+  $('.tabulated').show();
+  if(groupedData == null) {
+      groupdata();
+  }
+
+  let $keyword = $('input[type=\'search\']').val();
+  let regex = new RegExp($keyword, 'gi');
+  // console.log($keyword);
+  $.each(groupedData, (index, item) => {
+
+    isSame = (flag)?regex.exec(item.key):item.key.toLowerCase() == $keyword.toLowerCase();
+    if(isSame) {
+      tableData = item.values;
+      tabulate(paginate());
+      return false;
+    }
+  })
+
+  // console.log(d3.group(paginate(dbData, 2), d => d.ministry));
+};
 
 let chart = (data = null) => {
   if(groupedData == null){groupdata();}
@@ -89,7 +127,7 @@ let chart = (data = null) => {
   //   .style("width", function(d) { return d.values.length * 10 + "px"; })
   //   .text(function(d) { return d.key; });
 
-  let width = '75%';
+  let width = '100%';
   let barHeight = 20;
 
   var x = d3.scaleLinear()
@@ -102,30 +140,41 @@ let chart = (data = null) => {
     .attr("width", width)
     .attr("height", barHeight * data.length);
 
+  var svgWidth = 720,
+      svgHeight = data.length * barHeight,
+      barPadding = 5;
 
-  var bar = chart.selectAll("g")
+
+  chart.selectAll('rect')
       .data(data)
-    .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+      .enter()
+      .append('rect')
+      .attr("width", function(d) {
+          return d.values.length;
+      })
+      .attr('x', function(d) {
+          return svgWidth - d.values.length;
+      })
+      .attr('height', barHeight - barPadding)
+      .attr('transform', function(d, i) {
+          var translate = [svgWidth, barHeight * (i + 1)];
+          return 'translate(' + translate + ')' + 'rotate(180)';
+      });
 
-  bar.append("rect")
-      .attr("width", function(d) { return x(d.values.length); })
-      .attr("height", barHeight - 1);
-
-  bar.append("text")
-      .attr('class', 'value')
-      .attr("x", function(d) { return x(d.values.length); })
-      .attr("y", barHeight / 2)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.values.length; });
-
-
-  // bar.append("text")
-  //     .attr('class', 'label')
-  //     .attr("x", function(d) { return x(d.values.length); })
-  //     .attr("y", barHeight / 2)
-  //     .attr("dy", ".35em")
-  //     .text(function(d) { return d.key; });
+  chart.selectAll('text')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('class', 'label')
+      .text(function(d) {
+          return d.key + '(' + d.values.length + ') ';
+      })
+      .attr("x", function(d, i) {
+          return d.values.length + 30;
+      })
+      .attr('y', function(d, i) {
+          return barHeight * (i + 1);
+      });
 }
 
 
@@ -137,32 +186,11 @@ fetch('http://localhost:3000/rajyasabha')
       tabulate(paginate());
       // console.log(data.splice(3,10));
       $('.Options').show();
-
-      $('#chartBtn').click();
     }).catch(err => console.log(err));
   }).catch(err => console.log(err));
 
 
-$('#searchBtn').click(() => {
-  $('.tabulated').show();
-  if(groupedData == null) {
-      groupdata();
-  }
-
-  let $keyword = $('input[type=\'search\']').val();
-  // console.log($keyword);
-  $.each(groupedData, (index, item) => {
-    if(item.key.toLowerCase() == $keyword.toLowerCase()) {
-      tableData = item.values;
-      tabulate(paginate());
-      return false;
-    }
-  })
-
-  // console.log(d3.group(paginate(dbData, 2), d => d.ministry));
-});
-
-
+$('#searchBtn').click(searchFn);
 
 
 $('#chartBtn').click(() => {
