@@ -1,0 +1,137 @@
+@mixin hoverable-bg($name, $color, $opacity) {
+  .hoverable-bg-#{$name} {
+    background-color: rgba($color, $opacity);
+  }
+}
+
+
+
+// #l-header {
+    .topnav {
+      @extend .bg-primary;
+      @extend .text-white;
+      @extend .d-none;
+      @extend .d-md-block;
+      font-size: 0.7em;
+      &,
+      .nav .nav-link {
+        // font-size: 1em;
+        line-height: 2.4em;
+        color: $gray-400;
+        @extend .py-0;
+      }
+    }
+    .navbar {
+      .navbar-toggler {
+        @extend .navbar-light;
+      }
+    }
+// }
+
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: -.3em;
+    // @extend .popover
+}
+.dropdown > .dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+}
+
+
+
+// nav
+.nav {
+  &.nav-dark {
+    .nav-link {
+      color: $white;
+    }
+  }
+}
+
+
+.btn:hover {
+  @extend .shadow;
+  position: relative;
+  top: -.1em;
+}
+
+
+.carousel {
+  .carousel-item {
+    max-height: 80vh;
+    @extend .overflow-hidden;
+  }
+}
+
+
+
+// Cards
+
+.card {
+  .card-img-top {
+    max-width: 100%;
+    max-height: 100%;
+
+  }
+  .card-img-overlay.hoverable {
+    display: none;
+  }
+  &:hover {
+    .card-img-overlay.hoverable {
+      display: flex;
+      align-items: center;
+      border-radius: $card-border-radius;
+      color: white;
+      // opacity: 0.7;
+    }
+
+    @include hoverable-bg('primary', $primary, 0.7);
+    @include hoverable-bg('danger', $danger, 0.7);
+    @include hoverable-bg('info', $info, 0.7);
+  }
+}
+
+
+table {
+  thead {
+    text-transform: capitalize;
+  }
+  tbody {
+    font-size: 0.8em;
+  }
+}
+
+
+// Bar Chart
+
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text.value {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+
+.chart text.label {
+  font: 10px sans-serif;
+  text-anchor: middle;
+  text-transform: capitalize;
+}
+
+
+
+
+footer {
+  font-size: .9em;
+  .nav {
+    .nav-link {
+      @extend .py-0;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Rajya Sabha Analysis</title>
+  </head>
+  <body class="pt-5">
+    <header class="text-center">
+      <h1 class="mb-4">Rajya Sabha Analytics</h1>
+    </header>
+    <main>
+      <section class="container">
+        <div class="d-flex justify-content-between">
+          <div class="form-group w-25">
+            <input type="search" class="form-control" name="searchbar" id="searchbar" placeholder="Search..." value="">
+          </div>
+          <div class="Options">
+            <button type="button" class="btn btn-primary" id="searchBtn" name="button">Search</button>
+            <button type="button" class="btn btn-primary" id="chartBtn" name="button">Chart</button>
+            <button type="button" class="btn btn-primary" id="filterBtn" name="button">Filter</button>
+          </div>
+        </div>
+
+
+        <div class="tabulated">
+          <p> Showing <span id="limitSpan"></span> results from <span id="startSpan"></span> to <span id="endSpan"></span> </p>
+          <table id="resultsTable" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="chart">
+
+        </div>
+      </section>
+    </main>
+  <script type="text/javascript" src="bundle.js"></script></body>
+</html>

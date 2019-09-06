@@ -1,0 +1,32 @@
+
+
+
+$purple:  #6B46C1 ;
+$red:     #E53E3E ;
+$primary: $purple ;
+
+$enable-responsive-font-sizes: true ;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 480px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) ;
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$container-max-widths: (
+  sm: 480px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px
+) ;
+
+$font-family-custom-base:     'Livvic', sans-serif ;
+
+// $font-family-base:            $font-family-sans-serif ;
+$font-family-base:              $font-family-custom-base ;
+// stylelint-enable value-keyword-case

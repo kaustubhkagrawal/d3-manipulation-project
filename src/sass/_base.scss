@@ -1,0 +1,11 @@
+
+
+img {
+  @extend .w-100;
+}
+
+// forms
+label {
+  font-size: .8em;
+  @extend .text-secondary;
+}
