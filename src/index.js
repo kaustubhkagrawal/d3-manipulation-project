@@ -73,21 +73,6 @@ let groupdata = () => {
   groupedData = d3.nest()
     .key(d => d.ministry)
     .entries(dbData);
-
-
-  // d3.select('#searchbar')
-  //   .selectAll('option')
-  //   .data(groupedData)
-  //   .append('option')
-  //   .attr('value', d => d.key)
-  //   .text(d => d.key);
-
-
-  // $.each(groupedData, (index, item) => {
-  //   d3.select('#searchbar')
-  //     .append('option')
-  //     .attr('value', item.key.toLowerCase())
-  //     .text(item.key);
 }
 
 let searchFn = (flag = true) => {
