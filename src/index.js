@@ -12,6 +12,15 @@ let columns = [''];
 let dbData, groupedData;
 let tableData;
 let page = 1, limit = 10;
+let filters = {
+  sort: {
+    ministry: false,
+    question: false,
+    idnumber: false
+  },
+  order: true,
+  type: 'allstar'
+}
 
 
 
@@ -59,7 +68,11 @@ let tabulate = (data) => {
   // console.log(d3.select('table'));
 }
 
-let paginate = (data = tableData) => {
+let paginate = () => {
+  filter();
+  let data = tableData;
+
+
   let start = (page - 1) * limit;
   // console.log([start, start + limit]);
   d3.select('#limitSpan').text(limit);
@@ -75,6 +88,58 @@ let groupdata = () => {
     .entries(dbData);
 }
 
+
+let filter = () => {
+  // Update filters
+  let $sort = $('input[name="sort"]');
+  for(let i = 0; i < $sort.length; i++) {
+    filters.sort[$sort.eq(i).val()] = ($sort.eq(i).is(':checked'))?true:false;
+  }
+
+  let $order = $('input[name="order"]');
+  for(let i = 0; i < $order.length; i++) {
+    filters.order = ($order.eq(0).is(':checked'))?true:false;
+    // filters.sort[$sort.eq(i).val()] = ($sort.eq(i).is(':checked'))?true:false;
+    // filters.order = ($('input[name="order"]').val() == 'ascending')?true:false;
+  }
+
+  let $type = $('input[name="typeq"]');
+  for (var i = 0; i < $type.length; i++) {
+    if($type.eq(i).is(':checked')){
+      filters.type = $type.eq(i).val();
+    }
+  }
+
+  // console.log(filters);
+
+  // Start filtering and sorting
+
+  tableData = tableData.filter((a) => {
+    if(filters.type == 'allstar'){
+      return true;
+    } else if(filters.type == a.question_type.toLowerCase()) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  tableData.sort((a,b) => {
+    if (filters.order) {// ascending
+      let sort1 = (filters.sort.ministry)?(a.ministry - b.ministry):true;
+      let sort2 = (filters.sort.question)?(a.question_no - b.question_no):true;
+      let sort3 = (filters.sort.idnumber)?(a.id - b.id):true;
+      return (sort1 && sort2 && sort3);
+    } else {// descending
+      let sort1 = (filters.sort.ministry)?(b.ministry - a.ministry):true;
+      let sort2 = (filters.sort.question)?(b.question_no - a.question_no):true;
+      let sort3 = (filters.sort.idnumber)?(b.id - a.id):true;
+      return (sort1 && sort2 && sort3);
+    }
+
+  });
+}
+
 let searchFn = (flag = true) => {
   $('.tabulated').show();
   if(groupedData == null) {
@@ -82,17 +147,23 @@ let searchFn = (flag = true) => {
   }
 
   let $keyword = $('input[type=\'search\']').val();
-  let regex = new RegExp($keyword, 'gi');
-  // console.log($keyword);
-  $.each(groupedData, (index, item) => {
+  if($keyword != "") {
+    let regex = new RegExp($keyword, 'gi');
+    // console.log($keyword);
+    $.each(groupedData, (index, item) => {
 
-    isSame = (flag)?regex.exec(item.key):item.key.toLowerCase() == $keyword.toLowerCase();
-    if(isSame) {
-      tableData = item.values;
-      tabulate(paginate());
-      return false;
-    }
-  })
+      isSame = (flag)?regex.exec(item.key):item.key.toLowerCase() == $keyword.toLowerCase();
+      if(isSame) {
+        tableData = item.values;
+        tabulate(paginate());
+        return false;
+      }
+    })
+  } else {
+    tableData = dbData;
+    console.log(tableData.length);
+    tabulate(paginate());
+  }
 
   // console.log(d3.group(paginate(dbData, 2), d => d.ministry));
 };
@@ -103,14 +174,6 @@ let chart = (data = null) => {
     data = groupedData;
   }
   d3.select('.chart').html('');
-  // console.log(groupedData);
-
-  // d3.select('.chart')
-  // .selectAll("div")
-  //   .data(data)
-  // .enter().append("div")
-  //   .style("width", function(d) { return d.values.length * 10 + "px"; })
-  //   .text(function(d) { return d.key; });
 
   let width = '100%';
   let barHeight = 20;
