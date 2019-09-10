@@ -13,11 +13,12 @@ let dbData, groupedData;
 let tableData;
 let page = 1, limit = 10;
 let filters = {
-  sort: {
-    ministry: false,
-    question: false,
-    idnumber: false
-  },
+  // sort: {
+  //   ministry: false,
+  //   question: false,
+  //   idnumber: false
+  // },
+  sortby: 'ministry',
   order: true,
   type: 'allstar'
 }
@@ -93,7 +94,10 @@ let filter = () => {
   // Update filters
   let $sort = $('input[name="sort"]');
   for(let i = 0; i < $sort.length; i++) {
-    filters.sort[$sort.eq(i).val()] = ($sort.eq(i).is(':checked'))?true:false;
+    // filters.sort[$sort.eq(i).val()] = ($sort.eq(i).is(':checked'))?true:false;
+    if($sort.eq(i).is(':checked')){
+      filters.sortby = $sort.eq(i).val();
+    }
   }
 
   let $order = $('input[name="order"]');
@@ -126,18 +130,35 @@ let filter = () => {
 
   tableData.sort((a,b) => {
     if (filters.order) {// ascending
-      let sort1 = (filters.sort.ministry)?(a.ministry - b.ministry):true;
-      let sort2 = (filters.sort.question)?(a.question_no - b.question_no):true;
-      let sort3 = (filters.sort.idnumber)?(a.id - b.id):true;
-      return (sort1 && sort2 && sort3);
+      // let sort1 = (filters.sort.ministry)?(a.ministry - b.ministry):0;
+      // let sort2 = (filters.sort.question)?(a.question_no - b.question_no):0;
+      // let sort3 = (filters.sort.idnumber)?(a.id - b.id):0;
+      // return (sort1 && sort2 && sort3);
+      if(a[filters.sortby] < b[filters.sortby]) {
+        return -1;
+      } else if(a[filters.sortby] > b[filters.sortby]) {
+        return 1;
+      }
+      return 0;
+      // return a[filters.sortby] - b[filters.sortby];
     } else {// descending
-      let sort1 = (filters.sort.ministry)?(b.ministry - a.ministry):true;
-      let sort2 = (filters.sort.question)?(b.question_no - a.question_no):true;
-      let sort3 = (filters.sort.idnumber)?(b.id - a.id):true;
-      return (sort1 && sort2 && sort3);
+      // let sort1 = (filters.sort.ministry)?(b.ministry - a.ministry):true;
+      // let sort2 = (filters.sort.question)?(b.question_no - a.question_no):true;
+      // let sort3 = (filters.sort.idnumber)?(b.id - a.id):true;
+      // return (sort1 && sort2 && sort3);
+
+      if(a[filters.sortby] < b[filters.sortby]) {
+        return 1;
+      } else if(a[filters.sortby] > b[filters.sortby]) {
+        return -1;
+      }
+      return 0;
+
+      // return b[filters.sortby] - a[filters.sortby];
     }
 
   });
+
 }
 
 let searchFn = (flag = true) => {
@@ -161,7 +182,7 @@ let searchFn = (flag = true) => {
     })
   } else {
     tableData = dbData;
-    console.log(tableData.length);
+    // console.log(tableData.length);
     tabulate(paginate());
   }
 
