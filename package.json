@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "d3": "^5.11.0",
+    "d3": "^7.6.1",
     "jquery": "^3.4.1",
     "json-server": "^0.15.1",
     "popper.js": "^1.15.0"
